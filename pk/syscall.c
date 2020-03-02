@@ -11,16 +11,34 @@
 
 typedef long (*syscall_t)(long, long, long, long, long, long, long);
 
-#define CLOCK_FREQ 1000000000
+#define CLOCK_FREQ 50000000
+
+static void output_csrs(){
+  uint64_t aq0 = read_csr(hpmcounter3);
+  uint64_t bq0 = read_csr(hpmcounter4);
+  uint64_t aq1 = read_csr(hpmcounter5);
+  uint64_t bq1 = read_csr(hpmcounter6);
+  uint64_t branch_misp = read_csr(hpmcounter7);
+  uint64_t branch_res = read_csr(hpmcounter8);
+
+  printk("=====performance_counters=====\n");
+  printk("%lld aq0\n", aq0 - current.aq0_0);
+  printk("%lld bq0\n", bq0 - current.bq0_0);
+  printk("%lld aq1\n", aq1 - current.aq1_0);
+  printk("%lld bq1\n", bq1 - current.bq1_0);
+  printk("%lld branch_misp\n", branch_misp - current.branch_misp_0);
+  printk("%lld branch_res\n", branch_res - current.branch_res_0);
+}
 
 void sys_exit(int code)
 {
   if (current.cycle0) {
-    uint64_t dt = rdtime64() - current.time0;
     uint64_t dc = rdcycle64() - current.cycle0;
+    uint64_t dt = rdtime64() - current.time0;
     uint64_t di = rdinstret64() - current.instret0;
 
-    printk("%lld ticks\n", dt);
+    output_csrs();
+    printk("%lld ticks (ns)\n", dt);
     printk("%lld cycles\n", dc);
     printk("%lld instructions\n", di);
     printk("%d.%d%d CPI\n", (int)(dc/di), (int)(10ULL*dc/di % 10),
@@ -400,7 +418,7 @@ long sys_clock_gettime(int clk_id, long *loc)
 {
   uint64_t t = rdcycle64();
   loc[0] = t / CLOCK_FREQ;
-  loc[1] = (t % CLOCK_FREQ) / (CLOCK_FREQ / 1000000000);
+  loc[1] = (t % CLOCK_FREQ) * (1000000000/CLOCK_FREQ);
 
   return 0;
 }

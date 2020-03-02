@@ -81,6 +81,41 @@ static void init_tf(trapframe_t* tf, long pc, long sp)
   tf->gpr[2] = sp;
   tf->epc = pc;
 }
+static void rest_of_boot_loader(uintptr_t kstack_top);
+
+static void init_csrs(){
+  //needs to be in machine mode??
+
+  // Init the hpmcounters
+  //  Bits [0:7] = Event set
+  //  Bits[?:8] = Mask out what events you want to map to that register.
+  //  In our case we only map one event to each reg. therefore mphmevent3 => 0b001. mphevent4 => 0b010 etc. All are powers of 2.
+
+  write_csr(mcounteren, -1);
+  write_csr(scounteren, -1); // Enable user use of all perf counters
+  // LSC:
+  write_csr(mhpmevent3, 0x103); // A-Q Lane 0
+  write_csr(mhpmevent4, 0x203); // B-Q Lane 0
+  write_csr(mhpmevent5, 0x403); // A-Q Lane 1
+  write_csr(mhpmevent6, 0x803); // B-Q Lane 1
+  // general:
+  write_csr(mhpmevent7, 0x2001);// branch misprediction
+  write_csr(mhpmevent8, 0x1C000);// branch resolution for boom - decoded branch/jal/jalr for rocket
+  // currently configured to 10 performance counters - so up to mhpmevent12
+
+  // continue execution
+  enter_supervisor_mode(rest_of_boot_loader, pk_vm_init(), 0);
+}
+static void read_csrs(){
+
+  // Read the initial value of the CSR regs attached to the counters
+  current.aq0_0 = read_csr(hpmcounter3);
+  current.bq0_0 = read_csr(hpmcounter4);
+  current.aq1_0 = read_csr(hpmcounter5);
+  current.bq1_0 = read_csr(hpmcounter6);
+  current.branch_misp_0 = read_csr(hpmcounter7);
+  current.branch_res_0 = read_csr(hpmcounter8);
+}
 
 static void run_loaded_program(size_t argc, char** argv, uintptr_t kstack_top)
 {
@@ -153,6 +188,7 @@ static void run_loaded_program(size_t argc, char** argv, uintptr_t kstack_top)
   STACK_INIT(uintptr_t);
 
   if (current.cycle0) { // start timer if so requested
+    read_csrs();
     current.time0 = rdtime64();
     current.cycle0 = rdcycle64();
     current.instret0 = rdinstret64();
@@ -177,7 +213,6 @@ static void rest_of_boot_loader(uintptr_t kstack_top)
   current.phdr = (uintptr_t)phdrs;
   current.phdr_size = sizeof(phdrs);
   load_elf(args.argv[0], &current);
-
   run_loaded_program(argc, args.argv, kstack_top);
 }
 
@@ -190,7 +225,7 @@ void boot_loader(uintptr_t dtb)
   set_csr(sstatus, SSTATUS_SUM | SSTATUS_FS | SSTATUS_VS);
 
   file_init();
-  enter_supervisor_mode(rest_of_boot_loader, pk_vm_init(), 0);
+  enter_machine_mode(init_csrs, 0, 0);
 }
 
 void boot_other_hart(uintptr_t dtb)

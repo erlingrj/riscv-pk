@@ -14,18 +14,22 @@ typedef long (*syscall_t)(long, long, long, long, long, long, long);
 #define CLOCK_FREQ 50000000
 
 static void output_csrs(){
-  uint64_t aq0 = read_csr(hpmcounter3);
-  uint64_t bq0 = read_csr(hpmcounter4);
-  uint64_t aq1 = read_csr(hpmcounter5);
-  uint64_t bq1 = read_csr(hpmcounter6);
-  uint64_t branch_misp = read_csr(hpmcounter7);
-  uint64_t branch_res = read_csr(hpmcounter8);
+  uint64_t q0_0_1 = read_csr(hpmcounter5);
+  uint64_t q1_0_1 = read_csr(hpmcounter6);
+  uint64_t q2_0_1 = read_csr(hpmcounter7);
+  uint64_t q0_1_1 = read_csr(hpmcounter8);
+  uint64_t q1_1_1 = read_csr(hpmcounter9);
+  uint64_t q2_1_1 = read_csr(hpmcounter10);
+  uint64_t branch_misp = read_csr(hpmcounter3);
+  uint64_t branch_res = read_csr(hpmcounter4);
 
   printk("=====performance_counters=====\n");
-  printk("%lld aq0\n", aq0 - current.aq0_0);
-  printk("%lld bq0\n", bq0 - current.bq0_0);
-  printk("%lld aq1\n", aq1 - current.aq1_0);
-  printk("%lld bq1\n", bq1 - current.bq1_0);
+  printk("%lld q0_0\n", q0_0_1 - current.q0_0_0);
+  printk("%lld q1_0\n", q1_0_1 - current.q1_0_0);
+  printk("%lld q2_0\n", q2_0_1 - current.q2_0_0);
+  printk("%lld q0_1\n", q0_1_1 - current.q0_1_0);
+  printk("%lld q1_1\n", q1_1_1 - current.q1_1_0);
+  printk("%lld q2_1\n", q2_1_1 - current.q2_1_0);
   printk("%lld branch_misp\n", branch_misp - current.branch_misp_0);
   printk("%lld branch_res\n", branch_res - current.branch_res_0);
 }

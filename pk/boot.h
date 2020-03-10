@@ -23,12 +23,14 @@ typedef struct {
   uint64_t time0;
   uint64_t cycle0;
   uint64_t instret0;
-  uint64_t aq0_0;
-  uint64_t bq0_0;
-  uint64_t aq1_0;
-  uint64_t bq1_0;
   uint64_t branch_misp_0;
   uint64_t branch_res_0;
+  uint64_t q0_0_0;
+  uint64_t q1_0_0;
+  uint64_t q2_0_0;
+  uint64_t q0_1_0;
+  uint64_t q1_1_0;
+  uint64_t q2_1_0;
 } elf_info;
 
 extern elf_info current;

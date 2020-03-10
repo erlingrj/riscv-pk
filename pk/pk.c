@@ -93,14 +93,16 @@ static void init_csrs(){
 
   write_csr(mcounteren, -1);
   write_csr(scounteren, -1); // Enable user use of all perf counters
-  // LSC:
-  write_csr(mhpmevent3, 0x103); // A-Q Lane 0
-  write_csr(mhpmevent4, 0x203); // B-Q Lane 0
-  write_csr(mhpmevent5, 0x403); // A-Q Lane 1
-  write_csr(mhpmevent6, 0x803); // B-Q Lane 1
   // general:
-  write_csr(mhpmevent7, 0x2001);// branch misprediction
-  write_csr(mhpmevent8, 0x1C000);// branch resolution for boom - decoded branch/jal/jalr for rocket
+  write_csr(mhpmevent3, 0x2001);// branch misprediction
+  write_csr(mhpmevent4, 0x1C000);// branch resolution for boom - decoded branch/jal/jalr for rocket
+  // LSC:
+  write_csr(mhpmevent5, 0x103); // Q0 Lane 0
+  write_csr(mhpmevent6, 0x203); // Q1 Lane 0
+  write_csr(mhpmevent7, 0x403); // Q2 Lane 0
+  write_csr(mhpmevent8, 0x104); // Q0 Lane 1
+  write_csr(mhpmevent9, 0x204); // Q1 Lane 1
+  write_csr(mhpmevent10, 0x404); // Q2 Lane 1
   // currently configured to 10 performance counters - so up to mhpmevent12
 
   // continue execution
@@ -109,12 +111,14 @@ static void init_csrs(){
 static void read_csrs(){
 
   // Read the initial value of the CSR regs attached to the counters
-  current.aq0_0 = read_csr(hpmcounter3);
-  current.bq0_0 = read_csr(hpmcounter4);
-  current.aq1_0 = read_csr(hpmcounter5);
-  current.bq1_0 = read_csr(hpmcounter6);
-  current.branch_misp_0 = read_csr(hpmcounter7);
-  current.branch_res_0 = read_csr(hpmcounter8);
+  current.branch_misp_0 = read_csr(hpmcounter3);
+  current.branch_res_0 = read_csr(hpmcounter4);
+  current.q0_0_0 = read_csr(hpmcounter5);
+  current.q1_0_0 = read_csr(hpmcounter6);
+  current.q2_0_0 = read_csr(hpmcounter7);
+  current.q0_1_0 = read_csr(hpmcounter8);
+  current.q1_1_0 = read_csr(hpmcounter9);
+  current.q2_1_0 = read_csr(hpmcounter10);
 }
 
 static void run_loaded_program(size_t argc, char** argv, uintptr_t kstack_top)

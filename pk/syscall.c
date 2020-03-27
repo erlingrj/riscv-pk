@@ -40,13 +40,22 @@ void sys_exit(int code)
     uint64_t dc = rdcycle64() - current.cycle0;
     uint64_t dt = rdtime64() - current.time0;
     uint64_t di = rdinstret64() - current.instret0;
+    // measure here because the prints will cause syscalls
+    uint64_t sc = current.syscall_cnt;
+    uint64_t fs = current.frontend_syscall_cnt;
+    uint64_t fsc = current.frontend_syscall_cycles;
+    uint64_t fsr = current.frontend_syscall_instret;
 
     output_csrs();
     printk("%lld ticks (ns)\n", dt);
     printk("%lld cycles\n", dc);
     printk("%lld instructions\n", di);
     printk("%d.%d%d CPI\n", (int)(dc/di), (int)(10ULL*dc/di % 10),
-        (int)((100ULL*dc + di/2)/di % 10));
+        (int)((100ULL*dc)/di % 10));
+    printk("%lld syscalls\n", sc);
+    printk("%lld frontend_syscalls\n", fs);
+    printk("%lld frontend_syscall_cycles\n", fsc);
+    printk("%lld frontend_syscall_instructions\n", fsr);
   }
   shutdown(code);
 }
@@ -533,6 +542,6 @@ long do_syscall(long a0, long a1, long a2, long a3, long a4, long a5, unsigned l
 
   if (!f)
     panic("bad syscall #%ld!",n);
-
+  current.syscall_cnt++;
   return f(a0, a1, a2, a3, a4, a5, n);
 }

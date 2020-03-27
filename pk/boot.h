@@ -31,6 +31,10 @@ typedef struct {
   uint64_t q0_1_0;
   uint64_t q1_1_0;
   uint64_t q2_1_0;
+  uint64_t syscall_cnt;
+  uint64_t frontend_syscall_cnt;
+  uint64_t frontend_syscall_cycles;
+  uint64_t frontend_syscall_instret;
 } elf_info;
 
 extern elf_info current;

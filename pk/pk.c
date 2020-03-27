@@ -119,6 +119,8 @@ static void read_csrs(){
   current.q0_1_0 = read_csr(hpmcounter8);
   current.q1_1_0 = read_csr(hpmcounter9);
   current.q2_1_0 = read_csr(hpmcounter10);
+  current.syscall_cnt = 0;
+  current.frontend_syscall_cnt = 0;
 }
 
 static void run_loaded_program(size_t argc, char** argv, uintptr_t kstack_top)

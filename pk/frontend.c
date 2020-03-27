@@ -5,12 +5,14 @@
 #include "frontend.h"
 #include "syscall.h"
 #include "htif.h"
+#include "boot.h"
 #include <stdint.h>
 
 long frontend_syscall(long n, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5, uint64_t a6)
 {
   static volatile uint64_t magic_mem[8];
-
+  uint64_t cycles0 = rdcycle64();
+  uint64_t instret0 = rdinstret64();
   static spinlock_t lock = SPINLOCK_INIT;
   spinlock_lock(&lock);
 
@@ -28,6 +30,9 @@ long frontend_syscall(long n, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3
   long ret = magic_mem[0];
 
   spinlock_unlock(&lock);
+  current.frontend_syscall_cnt++;
+  current.frontend_syscall_instret += (rdinstret64()-instret0);
+  current.frontend_syscall_cycles += (rdcycle64()-cycles0);
   return ret;
 }
 

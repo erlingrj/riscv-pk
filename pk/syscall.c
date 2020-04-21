@@ -14,6 +14,7 @@ typedef long (*syscall_t)(long, long, long, long, long, long, long);
 #define CLOCK_FREQ 50000000
 
 static void output_csrs(){
+  /*
   uint64_t q0_0_1 = read_csr(hpmcounter5);
   uint64_t q1_0_1 = read_csr(hpmcounter6);
   uint64_t q2_0_1 = read_csr(hpmcounter7);
@@ -22,8 +23,20 @@ static void output_csrs(){
   uint64_t q2_1_1 = read_csr(hpmcounter10);
   uint64_t branch_misp = read_csr(hpmcounter3);
   uint64_t branch_res = read_csr(hpmcounter4);
+  */
+
+  uint64_t in_a_q = read_csr(hpmcounter5);
+  uint64_t in_b_q = read_csr(hpmcounter6);
+
 
   printk("=====performance_counters=====\n");
+  printk("%lld aq\n", in_a_q - current.in_a_q);
+  printk("%lld bq\n", in_b_q - current.in_b_q);
+  // Dump IST info
+  volatile uint64_t tmp1 =  read_csr(hpmcounter7);
+  volatile uint64_t tmp2 = read_csr(hpmcounter8);
+
+  /*
   printk("%lld q0_0\n", q0_0_1 - current.q0_0_0);
   printk("%lld q1_0\n", q1_0_1 - current.q1_0_0);
   printk("%lld q2_0\n", q2_0_1 - current.q2_0_0);
@@ -32,6 +45,7 @@ static void output_csrs(){
   printk("%lld q2_1\n", q2_1_1 - current.q2_1_0);
   printk("%lld branch_misp\n", branch_misp - current.branch_misp_0);
   printk("%lld branch_res\n", branch_res - current.branch_res_0);
+  */
 }
 
 void sys_exit(int code)

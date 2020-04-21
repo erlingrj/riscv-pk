@@ -94,15 +94,15 @@ static void init_csrs(){
   write_csr(mcounteren, -1);
   write_csr(scounteren, -1); // Enable user use of all perf counters
   // general:
-  write_csr(mhpmevent3, 0x2001);// branch misprediction
-  write_csr(mhpmevent4, 0x1C000);// branch resolution for boom - decoded branch/jal/jalr for rocket
+  //write_csr(mhpmevent3, 0x2001);// branch misprediction
+  //write_csr(mhpmevent4, 0x1C000);// branch resolution for boom - decoded branch/jal/jalr for rocket
   // LSC:
   write_csr(mhpmevent5, 0x103); // Q0 Lane 0
   write_csr(mhpmevent6, 0x203); // Q1 Lane 0
-  write_csr(mhpmevent7, 0x403); // Q2 Lane 0
-  write_csr(mhpmevent8, 0x104); // Q0 Lane 1
-  write_csr(mhpmevent9, 0x204); // Q1 Lane 1
-  write_csr(mhpmevent10, 0x404); // Q2 Lane 1
+  //write_csr(mhpmevent7, 0x403); // Q2 Lane 0
+  //write_csr(mhpmevent8, 0x104); // Q0 Lane 1
+  //write_csr(mhpmevent9, 0x204); // Q1 Lane 1
+  //write_csr(mhpmevent10, 0x404); // Q2 Lane 1
   // currently configured to 10 performance counters - so up to mhpmevent12
 
   // continue execution
@@ -111,14 +111,18 @@ static void init_csrs(){
 static void read_csrs(){
 
   // Read the initial value of the CSR regs attached to the counters
-  current.branch_misp_0 = read_csr(hpmcounter3);
-  current.branch_res_0 = read_csr(hpmcounter4);
-  current.q0_0_0 = read_csr(hpmcounter5);
-  current.q1_0_0 = read_csr(hpmcounter6);
-  current.q2_0_0 = read_csr(hpmcounter7);
-  current.q0_1_0 = read_csr(hpmcounter8);
-  current.q1_1_0 = read_csr(hpmcounter9);
-  current.q2_1_0 = read_csr(hpmcounter10);
+  
+  current.in_a_q = read_csr(hpmcounter5);
+  current.in_b_q = read_csr(hpmcounter6);
+  
+  //current.branch_misp_0 = read_csr(hpmcounter3);
+  //current.branch_res_0 = read_csr(hpmcounter4);
+  //current.q0_0_0 = read_csr(hpmcounter5);
+  //current.q1_0_0 = read_csr(hpmcounter6);
+  //current.q2_0_0 = read_csr(hpmcounter7);
+  //current.q0_1_0 = read_csr(hpmcounter8);
+  //current.q1_1_0 = read_csr(hpmcounter9);
+  //current.q2_1_0 = read_csr(hpmcounter10);
   current.syscall_cnt = 0;
   current.frontend_syscall_cnt = 0;
 }

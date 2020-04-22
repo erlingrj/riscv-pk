@@ -30,8 +30,8 @@ static void output_csrs(){
 
 
   printk("=====performance_counters=====\n");
-  printk("%lld aq\n", in_a_q - current.in_a_q);
-  printk("%lld bq\n", in_b_q - current.in_b_q);
+  printk("%lld aq0\n", in_a_q - current.in_a_q);
+  printk("%lld bq0\n", in_b_q - current.in_b_q);
   // Dump IST info
   volatile uint64_t tmp1 =  read_csr(hpmcounter7);
   volatile uint64_t tmp2 = read_csr(hpmcounter8);

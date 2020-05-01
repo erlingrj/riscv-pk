@@ -24,7 +24,9 @@ static void output_csrs(){
   uint64_t branch_misp = read_csr(hpmcounter3);
   uint64_t branch_res = read_csr(hpmcounter4);
   */
-
+  volatile uint64_t tmp1 = read_csr(hpmcounter7);
+  volatile uint64_t tmp3 = read_csr(hpmcounter9);
+  
   uint64_t in_a_q = read_csr(hpmcounter5);
   uint64_t in_b_q = read_csr(hpmcounter6);
 
@@ -33,8 +35,7 @@ static void output_csrs(){
   printk("%lld aq0\n", in_a_q - current.in_a_q);
   printk("%lld bq0\n", in_b_q - current.in_b_q);
   // Dump IST info
-  volatile uint64_t tmp1 = read_csr(hpmcounter7);
-  volatile uint64_t tmp3 = read_csr(hpmcounter9);
+
   /*
   printk("%lld q0_0\n", q0_0_1 - current.q0_0_0);
   printk("%lld q1_0\n", q1_0_1 - current.q1_0_0);

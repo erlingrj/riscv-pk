@@ -115,6 +115,9 @@ static void read_csrs(){
   current.in_a_q = read_csr(hpmcounter5);
   current.in_b_q = read_csr(hpmcounter6);
   
+ // hpmcounter8 resets all counters that are being directly printed to the stdout from spike itself.
+  volatile uint64_t tmp2 = read_csr(hpmcounter8);
+
   //current.branch_misp_0 = read_csr(hpmcounter3);
   //current.branch_res_0 = read_csr(hpmcounter4);
   //current.q0_0_0 = read_csr(hpmcounter5);

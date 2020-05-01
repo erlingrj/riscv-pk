@@ -33,8 +33,7 @@ static void output_csrs(){
   printk("%lld aq0\n", in_a_q - current.in_a_q);
   printk("%lld bq0\n", in_b_q - current.in_b_q);
   // Dump IST info
-  volatile uint64_t tmp1 =  read_csr(hpmcounter7);
-  volatile uint64_t tmp2 = read_csr(hpmcounter8);
+  volatile uint64_t tmp1 = read_csr(hpmcounter7);
   volatile uint64_t tmp3 = read_csr(hpmcounter9);
   /*
   printk("%lld q0_0\n", q0_0_1 - current.q0_0_0);
